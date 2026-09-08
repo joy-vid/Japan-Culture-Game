@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -22,19 +23,38 @@ public class DialogueBlock
 
 public class VNManager : MonoBehaviour
 {
+    // =========================
+    // DIALOGUE UI
+    // =========================
+
     [Header("Dialogue UI")]
     public TMP_Text nameText;
     public TMP_Text dialogueText;
+
+
+    // =========================
+    // PORTRAITS
+    // =========================
 
     [Header("Portraits")]
     public CanvasGroup aikoPortrait;
     public CanvasGroup oniPortrait;
 
+    [Header("Portrait Settings")]
+    public float portraitFadeDuration = 0.2f;
+
+
+    // =========================
+    // DIALOGUE DATA
+    // =========================
+
     [Header("Dialogue")]
     public DialogueBlock[] dialogueBlocks;
 
-    [Header("Portrait Settings")]
-    public float portraitFadeDuration = 0.2f;
+
+    // =========================
+    // TYPING
+    // =========================
 
     [Header("Typing Settings")]
     public float typingSpeed = 0.025f;
@@ -44,12 +64,73 @@ public class VNManager : MonoBehaviour
 
     public int soundEveryCharacters = 2;
 
+
+    // =========================
+    // NEXT INDICATOR
+    // =========================
+
     [Header("Next Indicator")]
     public GameObject nextIndicator;
 
     public float nextPulseSpeed = 3f;
     public float nextPulseAmount = 0.08f;
 
+
+    // =========================
+    // BATTLE TRANSITION
+    // =========================
+
+    [Header("Battle Transition")]
+    public CanvasGroup battleTransition;
+    public Image battleTransitionImage;
+
+
+    // =========================
+    // BATTLE SFX
+    // =========================
+
+    [Header("Battle Transition SFX")]
+    public AudioSource transitionAudioSource;
+    public AudioClip battleSlashSound;
+
+
+    // =========================
+    // WHITE FLASH
+    // =========================
+
+    [Header("White Flash")]
+    public float whiteFlashInDuration = 0.035f;
+    public float whiteFlashOutDuration = 0.06f;
+    public float whiteFlashAlpha = 1f;
+
+
+    // =========================
+    // RED AFTERGLOW
+    // =========================
+
+    [Header("Red Afterglow")]
+    public Color redAfterglowColor =
+        new Color(0.45f, 0.02f, 0.02f, 1f);
+
+    public float redFadeInDuration = 0.08f;
+    public float redHoldDuration = 0.08f;
+    public float redFadeOutDuration = 0.14f;
+
+    public float redAfterglowAlpha = 0.4f;
+
+
+    // =========================
+    // BLACK FADE
+    // =========================
+
+    [Header("Black Fade")]
+    public float battleFadeDuration = 0.4f;
+    public float blackScreenDuration = 0.2f;
+
+
+    // =========================
+    // PRIVATE VARIABLES
+    // =========================
 
     private int blockIndex = 0;
     private int lineIndex = 0;
@@ -61,33 +142,55 @@ public class VNManager : MonoBehaviour
     private Coroutine nextPulseCoroutine;
 
     private bool isTyping = false;
+    private bool isTransitioning = false;
 
     private string currentLine;
 
     private Vector3 nextIndicatorBaseScale;
 
 
+    // =========================
+    // START
+    // =========================
+
     void Start()
     {
-        // Portrait awal dibuat invisible
         aikoPortrait.alpha = 0f;
         oniPortrait.alpha = 0f;
 
-        // Simpan ukuran awal indicator
+        battleTransition.alpha = 0f;
+
+        if (battleTransitionImage == null)
+        {
+            battleTransitionImage =
+                battleTransition.GetComponent<Image>();
+        }
+
+        battleTransitionImage.color = Color.black;
+
         nextIndicatorBaseScale =
             nextIndicator.transform.localScale;
 
-        // Indicator awal disembunyikan
         nextIndicator.SetActive(false);
 
         ShowDialogue();
     }
 
 
+    // =========================
+    // NEXT DIALOGUE
+    // =========================
+
     public void NextDialogue()
     {
-        // Kalau text masih mengetik,
-        // klik hanya menyelesaikan text
+        // Jangan bisa spam selama transition
+        if (isTransitioning)
+        {
+            return;
+        }
+
+        // Kalau masih typing,
+        // klik hanya menyelesaikan kalimat
         if (isTyping)
         {
             FinishTyping();
@@ -96,25 +199,27 @@ public class VNManager : MonoBehaviour
 
         HideNextIndicator();
 
-        // Pindah ke line berikutnya
         lineIndex++;
 
-        // Kalau masih ada line dalam block yang sama
-        if (lineIndex < dialogueBlocks[blockIndex].lines.Length)
+        // Masih ada line dalam block yang sama
+        if (lineIndex <
+            dialogueBlocks[blockIndex].lines.Length)
         {
             ShowDialogue();
             return;
         }
 
-        // Kalau block sudah selesai,
-        // pindah ke block / speaker berikutnya
+        // Pindah ke block berikutnya
         blockIndex++;
         lineIndex = 0;
 
-        // Kalau semua dialogue selesai
+        // Dialogue selesai → battle transition
         if (blockIndex >= dialogueBlocks.Length)
         {
-            SceneManager.LoadScene("ShrineBattle");
+            StartCoroutine(
+                PlayBattleTransition()
+            );
+
             return;
         }
 
@@ -122,23 +227,29 @@ public class VNManager : MonoBehaviour
     }
 
 
+    // =========================
+    // SHOW DIALOGUE
+    // =========================
+
     private void ShowDialogue()
     {
         DialogueBlock currentBlock =
             dialogueBlocks[blockIndex];
 
-        // Update nama speaker
-        nameText.text = currentBlock.displayName;
+        nameText.text =
+            currentBlock.displayName;
 
-        // Ganti portrait hanya kalau speakernya berubah
+        // Portrait hanya fade saat speaker berubah
         if (currentSpeaker != currentBlock.speaker)
         {
-            currentSpeaker = currentBlock.speaker;
+            currentSpeaker =
+                currentBlock.speaker;
 
-            ChangePortrait(currentBlock.speaker);
+            ChangePortrait(
+                currentBlock.speaker
+            );
         }
 
-        // Mulai typing dialogue
         StartTyping(
             currentBlock.lines[lineIndex]
         );
@@ -161,7 +272,9 @@ public class VNManager : MonoBehaviour
         currentLine = line;
 
         typingCoroutine =
-            StartCoroutine(TypeDialogue(line));
+            StartCoroutine(
+                TypeDialogue(line)
+            );
     }
 
 
@@ -169,10 +282,8 @@ public class VNManager : MonoBehaviour
     {
         isTyping = true;
 
-        // Masukkan seluruh text terlebih dahulu
         dialogueText.text = line;
 
-        // Tapi sembunyikan semua karakter
         dialogueText.maxVisibleCharacters = 0;
 
         dialogueText.ForceMeshUpdate();
@@ -184,12 +295,16 @@ public class VNManager : MonoBehaviour
 
         for (int i = 0; i < totalCharacters; i++)
         {
-            dialogueText.maxVisibleCharacters = i + 1;
+            dialogueText.maxVisibleCharacters =
+                i + 1;
 
             char currentCharacter =
-                dialogueText.textInfo.characterInfo[i].character;
+                dialogueText
+                    .textInfo
+                    .characterInfo[i]
+                    .character;
 
-            // Jangan bunyi kalau spasi
+            // Typing sound tidak bunyi di spasi
             if (!char.IsWhiteSpace(currentCharacter))
             {
                 soundCounter++;
@@ -197,13 +312,14 @@ public class VNManager : MonoBehaviour
                 if (soundCounter >= soundEveryCharacters)
                 {
                     PlayTypingSound();
-
                     soundCounter = 0;
                 }
             }
 
             yield return
-                new WaitForSecondsRealtime(typingSpeed);
+                new WaitForSecondsRealtime(
+                    typingSpeed
+                );
         }
 
         isTyping = false;
@@ -218,7 +334,6 @@ public class VNManager : MonoBehaviour
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
-
             typingCoroutine = null;
         }
 
@@ -272,16 +387,21 @@ public class VNManager : MonoBehaviour
             oniPortrait.alpha;
 
         float targetAiko =
-            speaker == Speaker.Aiko ? 1f : 0f;
+            speaker == Speaker.Aiko
+            ? 1f
+            : 0f;
 
         float targetOni =
-            speaker == Speaker.Oni ? 1f : 0f;
+            speaker == Speaker.Oni
+            ? 1f
+            : 0f;
 
         float timer = 0f;
 
         while (timer < portraitFadeDuration)
         {
-            timer += Time.unscaledDeltaTime;
+            timer +=
+                Time.unscaledDeltaTime;
 
             float t =
                 timer / portraitFadeDuration;
@@ -373,5 +493,215 @@ public class VNManager : MonoBehaviour
 
             yield return null;
         }
+    }
+
+
+    // =========================
+    // BATTLE TRANSITION
+    // =========================
+
+    private IEnumerator PlayBattleTransition()
+    {
+        isTransitioning = true;
+
+        HideNextIndicator();
+
+
+        // =====================
+        // PLAY SHING SFX
+        // =====================
+
+        if (transitionAudioSource != null &&
+            battleSlashSound != null)
+        {
+            transitionAudioSource.PlayOneShot(
+                battleSlashSound
+            );
+        }
+
+
+        // =====================
+        // WHITE FLASH IN
+        // =====================
+
+        battleTransitionImage.color =
+            Color.white;
+
+        float timer = 0f;
+
+        battleTransition.alpha = 0f;
+
+        while (timer < whiteFlashInDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t =
+                timer / whiteFlashInDuration;
+
+            battleTransition.alpha =
+                Mathf.Lerp(
+                    0f,
+                    whiteFlashAlpha,
+                    t
+                );
+
+            yield return null;
+        }
+
+        battleTransition.alpha =
+            whiteFlashAlpha;
+
+
+        // =====================
+        // WHITE FLASH OUT
+        // =====================
+
+        timer = 0f;
+
+        while (timer < whiteFlashOutDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t =
+                timer / whiteFlashOutDuration;
+
+            battleTransition.alpha =
+                Mathf.Lerp(
+                    whiteFlashAlpha,
+                    0f,
+                    t
+                );
+
+            yield return null;
+        }
+
+        battleTransition.alpha = 0f;
+
+
+        // =====================
+        // RED AFTERGLOW IN
+        // =====================
+
+        battleTransitionImage.color =
+            redAfterglowColor;
+
+        timer = 0f;
+
+        while (timer < redFadeInDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t =
+                timer / redFadeInDuration;
+
+            t = Mathf.SmoothStep(
+                0f,
+                1f,
+                t
+            );
+
+            battleTransition.alpha =
+                Mathf.Lerp(
+                    0f,
+                    redAfterglowAlpha,
+                    t
+                );
+
+            yield return null;
+        }
+
+        battleTransition.alpha =
+            redAfterglowAlpha;
+
+
+        // =====================
+        // RED HOLD
+        // =====================
+
+        yield return
+            new WaitForSecondsRealtime(
+                redHoldDuration
+            );
+
+
+        // =====================
+        // RED AFTERGLOW OUT
+        // =====================
+
+        timer = 0f;
+
+        while (timer < redFadeOutDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t =
+                timer / redFadeOutDuration;
+
+            t = Mathf.SmoothStep(
+                0f,
+                1f,
+                t
+            );
+
+            battleTransition.alpha =
+                Mathf.Lerp(
+                    redAfterglowAlpha,
+                    0f,
+                    t
+                );
+
+            yield return null;
+        }
+
+        battleTransition.alpha = 0f;
+
+
+        // =====================
+        // BLACK FADE
+        // =====================
+
+        battleTransitionImage.color =
+            Color.black;
+
+        timer = 0f;
+
+        while (timer < battleFadeDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+
+            float t =
+                timer / battleFadeDuration;
+
+            t = Mathf.SmoothStep(
+                0f,
+                1f,
+                t
+            );
+
+            battleTransition.alpha = t;
+
+            yield return null;
+        }
+
+        battleTransition.alpha = 1f;
+
+
+        // =====================
+        // BLACK HOLD
+        // =====================
+
+        yield return
+            new WaitForSecondsRealtime(
+                blackScreenDuration
+            );
+
+
+        // =====================
+        // LOAD BATTLE
+        // =====================
+
+        SceneManager.LoadScene(
+            "ShrineBattle"
+        );
     }
 }
