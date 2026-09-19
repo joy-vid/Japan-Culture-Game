@@ -921,10 +921,15 @@ MonoBehaviour:
     displayName: Aiko
     lines:
     - Who are you?!
+  - speaker: 1
+    displayName: Aiko
+    lines:
+    - Nyoba aja
+    - Nyoba lagi
   typingSpeed: 0.03
   typingAudioSource: {fileID: 1973115441}
   typingSound: {fileID: 8300000, guid: 727ac8e97cd4e41918784261ec5bf331, type: 3}
-  soundEveryCharacters: 2
+  soundEveryCharacters: 3
   nextIndicator: {fileID: 1277697534}
   nextPulseSpeed: 3
   nextPulseAmount: 0.08
