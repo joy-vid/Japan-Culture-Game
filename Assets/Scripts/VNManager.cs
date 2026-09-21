@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public enum Speaker
 {
     Aiko,
+    Rinne,
     Oni
 }
 
@@ -38,6 +39,7 @@ public class VNManager : MonoBehaviour
 
     [Header("Portraits")]
     public CanvasGroup aikoPortrait;
+    public CanvasGroup rinnePortrait;
     public CanvasGroup oniPortrait;
 
     [Header("Portrait Settings")]
@@ -157,6 +159,7 @@ public class VNManager : MonoBehaviour
     {
         aikoPortrait.alpha = 0f;
         oniPortrait.alpha = 0f;
+        rinnePortrait.alpha = 0f;
 
         battleTransition.alpha = 0f;
 
@@ -386,6 +389,9 @@ public class VNManager : MonoBehaviour
         float startOni =
             oniPortrait.alpha;
 
+        float startRinne =
+            rinnePortrait.alpha;
+
         float targetAiko =
             speaker == Speaker.Aiko
             ? 1f
@@ -393,6 +399,11 @@ public class VNManager : MonoBehaviour
 
         float targetOni =
             speaker == Speaker.Oni
+            ? 1f
+            : 0f;
+
+        float targetRinne =
+            speaker == Speaker.Rinne
             ? 1f
             : 0f;
 
@@ -426,11 +437,19 @@ public class VNManager : MonoBehaviour
                     t
                 );
 
+            rinnePortrait.alpha =
+                Mathf.Lerp(
+                    startRinne,
+                    targetRinne,
+                    t
+                );
+
             yield return null;
         }
 
         aikoPortrait.alpha = targetAiko;
         oniPortrait.alpha = targetOni;
+        rinnePortrait.alpha = targetRinne;
 
         portraitCoroutine = null;
     }

@@ -731,6 +731,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1176629599}
+  - {fileID: 829413545}
   m_Father: {fileID: 44003381}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -871,6 +872,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 738471851}
   m_CullTransparentMesh: 1
+--- !u!1 &829413544
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 829413545}
+  - component: {fileID: 829413546}
+  m_Layer: 5
+  m_Name: RinnePotrait
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &829413545
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829413544}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1239629453}
+  m_Father: {fileID: 670418834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -669, y: -4}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &829413546
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829413544}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &830703839
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,29 +953,72 @@ MonoBehaviour:
   nameText: {fileID: 1677660003}
   dialogueText: {fileID: 437844717}
   aikoPortrait: {fileID: 1176629600}
+  rinnePortrait: {fileID: 829413546}
   oniPortrait: {fileID: 1795227148}
   portraitFadeDuration: 0.2
   dialogueBlocks:
+  - speaker: 1
+    displayName: Rinne
+    lines:
+    - 'Oya, Pasti dong! '
+    - Kan aku sudah menghabiskan waktu 2 minggu untuk mencari sumber asal dari sejarah
+      kuil ini~
   - speaker: 0
     displayName: Aiko
     lines:
-    - We finally reached the shrine...
-    - But something feels strange.
-    - I can feel a strange presence nearby...
+    - 'Maksudmu... '
+    - Sumber yang baru kamu cari di forum internet kemarin sore itu?
   - speaker: 1
-    displayName: ???
+    displayName: Rinne
     lines:
-    - You should not have come here.
-    - This shrine belongs to me now.
+    - 'Heh-, enak saja.. '
+    - 'Itu aku cari dari forum yang terintregritas ya! Bukan abal-abal! '
+  - speaker: 2
+    displayName: Oni
+    lines:
+    - Kalau memang kamu sudah menelitinya, kita tidak mungkin menghabiskan waktu
+      berjam-jam untuk mencari jalan menuju kuil ini sejak awal...
+  - speaker: 1
+    displayName: Rinne
+    lines:
+    - Ugh- umm...I
+    - -Itu..-yang terpenting kita berhasil menemukan kuilnya!
+    - "Artinya kuil ini nyata dan yang kitaperlu lakukan adalah memastikan\_apakah
+      rumor itu benar atau tidak."
+  - speaker: 2
+    displayName: Oni
+    lines:
+    - ...Bahkan kamu sendiri masih ragu soal rumor itu...
+  - speaker: 1
+    displayName: Rinne
+    lines:
+    - Yah! Justru itu tugas kita sebagai Klub Aktivitas Paranormal untuk memastikan
+      hal tersebut bukan?
+  - speaker: 2
+    displayName: Oni
+    lines:
+    - '... [menghela nafas]'
   - speaker: 0
     displayName: Aiko
     lines:
-    - Who are you?!
+    - Benar juga...
   - speaker: 1
+    displayName: Rinne
+    lines:
+    - Nah! Kalau gitu tunggu apa lagi?
+    - 'Langsung saja kita mulai eksplorasinya, SEKARANG! '
+    - 'Yahooo~! '
+    - '[Berlari masuk kedalam kuil] '
+  - speaker: 2
+    displayName: Oni
+    lines:
+    - '-Rin! '
+    - Tunggu dulu!
+    - ... Oh...
+  - speaker: 0
     displayName: Aiko
     lines:
-    - Nyoba aja
-    - Nyoba lagi
+    - Sepertinya dia sudah masuk duluan...
   typingSpeed: 0.03
   typingAudioSource: {fileID: 1973115441}
   typingSound: {fileID: 8300000, guid: 727ac8e97cd4e41918784261ec5bf331, type: 3}
@@ -1418,7 +1511,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 538, y: -35}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1176629600
@@ -1433,6 +1526,81 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!1 &1239629452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1239629453}
+  - component: {fileID: 1239629455}
+  - component: {fileID: 1239629454}
+  m_Layer: 5
+  m_Name: RinneImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1239629453
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239629452}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 829413545}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 648, y: -5}
+  m_SizeDelta: {x: 724, y: 1048.7}
+  m_Pivot: {x: 0.5, y: 0}
+--- !u!114 &1239629454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239629452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 4c9e9aa7c738740798ed36b213273b7d, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1239629455
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239629452}
+  m_CullTransparentMesh: 1
 --- !u!1 &1272020378
 GameObject:
   m_ObjectHideFlags: 0
@@ -2080,7 +2248,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 59, y: -117}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1973115440
