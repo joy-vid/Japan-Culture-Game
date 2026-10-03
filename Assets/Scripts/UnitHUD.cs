@@ -50,8 +50,9 @@ public class UnitHUD : MonoBehaviour
 
         hpFill.fillAmount = percentage;
 
-        if (hpText != null)
+        if (hpText != null){
             hpText.text = currentHP + " / " + maxHP;
+        }
     }
 
     public void UpdateMP(int currentMP, int maxMP)
@@ -60,7 +61,8 @@ public class UnitHUD : MonoBehaviour
 
         mpFill.fillAmount = percentage;
 
-        if (mpText != null)
+        if (mpText != null){
             mpText.text = currentMP + " / " + maxMP;
+        }
     }
 }
